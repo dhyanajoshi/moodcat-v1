@@ -12,22 +12,9 @@ import warnings
 import re
 import time
 from PIL import Image
-#from textblob import TextBlob
-#from dotenv import load_dotenv
-#load_dotenv()
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer # type: ignore
 analyzer = SentimentIntensityAnalyzer()
 from rapidfuzz import process
-import nltk
-@st.cache_resource
-def load_nltk():
-    nltk.download("punkt")
-    nltk.download("brown")
-    nltk.download("averaged_perceptron_tagger")
-    nltk.download("wordnet")
-
-load_nltk()
-
 warnings.filterwarnings("ignore")
 
 # ----------------------------
@@ -291,7 +278,7 @@ def preload_posters(movies_df):
 # ---------------------------
 # Hybrid Recommender
 # ---------------------------
-W_CF, W_CONTENT, W_POP = 0.5, 0.2, 0.1
+W_CF, W_CONTENT, W_POP = 0.5, 0.3, 0.2
 
 def get_mood_candidate_ids(movies_df, mood):
     genres = MOOD_TO_GENRES.get(mood, [])
@@ -380,29 +367,10 @@ def preprocess_text(text):
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
-def detect_mood_locally(user_text):
-    scores = analyzer.polarity_scores(user_text)
-    compound = scores["compound"]
-    if compound >= 0.6:
-        return "happy"
-    elif 0.2 <= compound < 0.6:
-        return "wholesome"
-    elif -0.2 < compound < 0.2:
-        return "neutral"
-    elif -0.6 < compound <= -0.2:
-        return "sad"
-    else:
-        return "dark"
-
-
 
 # ---------------------------
 # Display Grid
 # ---------------------------
-movies_df_raw, ratings_df = load_data()
-movies = prepare_movies(movies_df_raw)
-vect, tfidf_matrix = build_tfidf(movies)
-user_item, user_ids, movie_ids, svd_model, latent_matrix = build_cf(ratings_df)
 
 def display_grid(recs, grid_id="main"):
     cols = st.columns(3, gap="large")
