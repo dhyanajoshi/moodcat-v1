@@ -15,11 +15,7 @@ from PIL import Image
 #from textblob import TextBlob
 #from dotenv import load_dotenv
 #load_dotenv()
-try:
-    from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-except ImportError:
-    from vaderSentiment import SentimentIntensityAnalyzer
-
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer # type: ignore
 analyzer = SentimentIntensityAnalyzer()
 from rapidfuzz import process
 import nltk
