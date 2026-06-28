@@ -349,12 +349,15 @@ def recommend_hybrid(user_id, mood, seed_title, n, movies_df, ratings_df, tfidf_
 
     return res
 
-    def detect_intent(text):
-        text = text.lower()
-        for intent, keywords in INTENT_MAP.items():
-            if any(k in text for k in keywords):
-                return intent
-        return "feel_good"
+# ---------------------------
+# Intent Detection
+# ---------------------------
+def detect_intent(text):
+    text = text.lower()
+    for intent, keywords in INTENT_MAP.items():
+        if any(k in text for k in keywords):
+            return intent
+    return "feel_good"
 
 # ---------------------------
 # Fallback local mood detection
