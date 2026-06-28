@@ -1,0 +1,18 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables (IMPORTANT)
+.env
+
+# Extra apps
+app1.py
+
+# Archives only
+*.zip
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Optional files (keep if not used)
+tmdb_content.xlsx
