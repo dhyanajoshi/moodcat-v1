@@ -215,8 +215,6 @@ INTENT_TO_MOOD = {
     "feel_good": "happy"
 }
 
-intent = detect_intent(user_text)
-mood = INTENT_TO_MOOD[intent]
 
 
 # ----------------------------------------------------------------------------------------------------
