@@ -4,6 +4,7 @@ numpy
 scikit-learn
 textblob
 requests
-openai
 python-dotenv
 rapidfuzz
+nltk
+vaderSentiment==3.3.2
