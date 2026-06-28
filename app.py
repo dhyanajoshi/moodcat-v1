@@ -199,6 +199,24 @@ MOOD_KEYWORDS = {
     "neutral": []  # fallback
 }
 
+INTENT_MAP = {
+    "burnout": ["done with everything", "tired of life", "exhausted", "over it", "i can't anymore"],
+    "comfort": ["sad", "need comfort", "feeling low", "lonely", "bad day"],
+    "chaotic_fun": ["fucked", "mess", "chaos", "wild", "no thoughts"],
+    "romance_hot": ["sexy", "hot", "horny", "romantic", "love vibes"],
+    "feel_good": ["happy", "good vibes", "chill", "relaxed"],
+}
+
+INTENT_TO_MOOD = {
+    "burnout": "wholesome",
+    "comfort": "wholesome",
+    "chaotic_fun": "dark",
+    "romance_hot": "romantic",
+    "feel_good": "happy"
+}
+
+intent = detect_intent(user_text)
+mood = INTENT_TO_MOOD[intent]
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -332,6 +350,13 @@ def recommend_hybrid(user_id, mood, seed_title, n, movies_df, ratings_df, tfidf_
     res = top_pool.sample(n=min(n, len(top_pool)), weights=top_pool["final_score"], replace=False)
 
     return res
+
+    def detect_intent(text):
+        text = text.lower()
+        for intent, keywords in INTENT_MAP.items():
+            if any(k in text for k in keywords):
+                return intent
+        return "feel_good"
 
 # ---------------------------
 # Fallback local mood detection
@@ -534,7 +559,8 @@ with st.sidebar:
     if st.button("Analyze Mood & Recommend"):
         if user_text.strip():
             preprocessed_text = preprocess_text(user_text)
-            text_mood = detect_mood_locally(preprocessed_text)
+            intent = detect_intent(preprocessed_text)
+            text_mood = INTENT_TO_MOOD[intent]
             st.success(f"Detected mood: **{text_mood.capitalize()}**")
             recs_text = recommend_hybrid(
                 user_id=None,
