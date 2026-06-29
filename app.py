@@ -183,12 +183,12 @@ MOOD_KEYWORDS = {
     "thoughtful": ["mystery", "deep", "thoughtful", "mind bending", "🤯", "pondering", "intriguing"],
     "truecrime": ["crime", "murder", "investigation", "detective", "true crime", "🕵️‍♂️", "suspense"],
     "documentary": ["documentary", "real story", "biography", "real events", "📚", "learning", "educational"],
-    "neutral": []  # fallback
+    "neutral": []  
 }
 
 INTENT_MAP = {
     "burnout": ["done with everything", "tired of life", "exhausted", "over it", "i can't anymore"],
-    "comfort": ["sad", "need comfort", "feeling low", "lonely", "bad day"],
+    "comfort": ["sad", "need comfort", "feeling low", "lonely", "bad day", "sad", "sadd", "upset", "down", "blue","low" "depressed", "heartbroken", "meh","the world is ending"],
     "chaotic_fun": ["fucked", "mess", "chaos", "wild", "no thoughts"],
     "romance_hot": ["sexy", "hot", "romantic", "love vibes"],
     "feel_good": ["happy", "good vibes", "chill", "relaxed"],
