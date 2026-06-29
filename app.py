@@ -225,10 +225,7 @@ def parse_title_year(title):
 
 @st.cache_data(show_spinner=False)
 def poster_for_title(title):
-    """
-    Fetch poster for a movie using TMDB first, then OMDb as fallback.
-    Lazy loads, caches results in session_state, retries once if needed.
-    """
+  
     if "poster_cache" not in st.session_state:
         st.session_state.poster_cache = {}
     if title in st.session_state.poster_cache:
@@ -571,7 +568,7 @@ with st.sidebar:
             intent = detect_intent(preprocessed_text)
             text_mood = INTENT_TO_MOOD[intent]
             reason_map = {
-                "sad": (
+                "wholesome": (
                     "You seem to be feeling **low or emotionally drained**. "
                     "Instead of recommending more sad movies, MoodCat suggests **wholesome, comforting films** to help lift your mood. 💛"
                 ),
@@ -605,8 +602,8 @@ with st.sidebar:
                 "neutral": (
                     "Not sure what you're in the mood for? Here are some **general recommendations** to explore. 🎲"
                 ),}       
-
-            st.success(f"Here's the vibe I'm picking up...**{text_mood.capitalize()}**")
+            detected_feeling = intent.replace("_", " ").title()
+            st.success(f"Here's the vibe I'm picking up...**{detected_feeling}**")
             st.info(reason_map.get(text_mood, "Enjoy your personalized recommendations!"))
             recs_text = recommend_hybrid(
                 user_id=None,
