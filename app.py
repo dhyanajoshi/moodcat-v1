@@ -213,12 +213,9 @@ def get_tmdb_key():
 def get_omdb_key():
     return st.secrets.get("OMDB_API_KEY", None)
 
-
-
 def parse_title_year(title):
     year_match = re.search(r"\((\d{4})\)", title)
     year = year_match.group(1) if year_match else None
-
     title = re.sub(r"\(\d{4}\)", "", title).strip()
     title = title.replace(", The", "").replace(", A", "").replace(", An", "")
 
@@ -506,7 +503,7 @@ def recommend_by_seed_movie(seed_title, n, movies_df, tfidf_matrix, ratings_df, 
 # Sidebar: Seed Movie Feature
 # -----------------------------
 with st.sidebar:
-    n_recs_seed = st.slider("How many similar movies?", 3, 30, 6, key="seed_slider")
+    n_recs_seed = st.slider("How many similar movies?", 4, 40, 8, key="seed_slider")
     st.header("🎬 Your Movie Pick")
     seed_in = st.text_input("Enter a movie you like:")
     if st.sidebar.button("Get Similar Movies", key="seed_btn"):
