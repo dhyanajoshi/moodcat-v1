@@ -382,9 +382,12 @@ def display_grid(recs, grid_id="main"):
             st.markdown(f"**{row['title']}**")
             st.caption(f"Score: {row['final_score']:.3f}")
             button_key = f"save_{row['movieId']}_{grid_id}_{i}"
-            if st.button("💾 Save", key=button_key):
-                if row["movieId"] not in st.session_state.saved:
-                    st.session_state.saved.append(row["movieId"])
+            if st.button("💾 Save", key=f"save_{movie_id}"):
+                if movie_id not in st.session_state.saved:
+                st.session_state.saved.append(movie_id)
+                st.success("Added to Watchlist!")
+            else:
+                st.info("Already in Watchlist.")
 
 # ---------------------------
 # Main App
@@ -519,6 +522,32 @@ with st.sidebar:
             st.warning("Please enter a movie title first!")
 
 # ---------------------------
+# Sidebar: Saved Watchlist
+# ---------------------------
+st.sidebar.markdown("---")
+st.sidebar.subheader("💾 Your Watchlist")
+if st.session_state.saved:
+    for mid in st.session_state.saved.copy():
+        movie = movies[movies["movie_id"] == mid]
+        if movie.empty:
+            continue
+        title = movie.iloc[0]["title"]
+        col1, col2 = st.sidebar.columns([4, 1])
+        with col1:
+            poster = get_movie_poster(title)
+            st.image(poster, width=80)
+            st.caption(title)
+        with col2:
+            if st.button("❌", key=f"remove_{mid}"):
+                st.session_state.saved.remove(mid)
+                st.rerun()
+    if st.sidebar.button("🗑 Clear Watchlist"):
+        st.session_state.saved.clear()
+        st.rerun()
+else:
+    st.sidebar.caption("No saved movies yet.")    
+
+# ---------------------------
 # Text-based mood detection
 # ---------------------------
 with st.sidebar:
@@ -549,17 +578,7 @@ with st.sidebar:
         st.markdown("---") 
         st.subheader("🎬 Recommendations Based on Your Text Mood")
         display_grid(recs_text, grid_id="text_mood")  
-        with st.expander("💾 Saved Movies"):
-            if st.session_state.saved:
-                for mid in st.session_state.saved:
-                    title = movies.loc[movies["movieId"] == mid, "title"].values
-                    st.write("🍿", title[0] if len(title) > 0 else mid)
-                if st.button("Clear saved", key="clear_saved_text_mood"): 
-                    st.session_state.saved = []
-                else:
-                    st.caption("No saved movies yet.")
-            else:
-                st.warning("Please type something first!")
+       
 
 
 if "recs" not in st.session_state:
@@ -597,16 +616,7 @@ if st.button("Surprise Me! 🎲"):
     surprise = pool.sample(1).iloc[0]
     st.success(f"Your surprise pick: **{surprise['title']}**")
     st.image(poster_for_title(surprise["title"]), width=200)
-    st.markdown("### 💾 Saved Movies")
-    if st.session_state.saved:
-        for i, mid in enumerate(st.session_state.saved):
-            title = movies.loc[movies["movieId"]==mid,"title"].values
-            st.write("🍿", title[0] if len(title)>0 else mid)
-            remove_key = f"remove_{mid}_{i}"
-        if st.button("❌ Remove", key=remove_key):
-            st.session_state.saved.remove(mid)
-else:
-    st.caption("No saved movies yet.")
+    
 
 
 
