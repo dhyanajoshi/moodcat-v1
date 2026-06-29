@@ -381,13 +381,16 @@ def display_grid(recs, grid_id="main"):
             st.image(poster_url, use_container_width=True)
             st.markdown(f"**{row['title']}**")
             st.caption(f"Score: {row['final_score']:.3f}")
-            button_key = f"save_{row['movieId']}_{grid_id}_{i}"
-            if st.button("💾 Save", key=f"save_{movie_id}"):
+            movie_id = row.get("movieId")
+            button_key = f"save_{movie_id}_{grid_id}_{i}"
+            if st.button("💾 Save", key=button_key):
+                if "saved" not in st.session_state:
+                    st.session_state.saved = []
                 if movie_id not in st.session_state.saved:
-                st.session_state.saved.append(movie_id)
-                st.success("Added to Watchlist!")
-            else:
-                st.info("Already in Watchlist.")
+                    st.session_state.saved.append(movie_id)
+                    st.success("Added to Watchlist!")
+                else:
+                    st.info("Already in Watchlist.")
 
 # ---------------------------
 # Main App
@@ -534,7 +537,7 @@ if st.session_state.saved:
         title = movie.iloc[0]["title"]
         col1, col2 = st.sidebar.columns([4, 1])
         with col1:
-            poster = get_movie_poster(title)
+            poster = poster_for_title(title)
             st.image(poster, width=80)
             st.caption(title)
         with col2:
