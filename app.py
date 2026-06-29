@@ -571,7 +571,7 @@ with st.sidebar:
             intent = detect_intent(preprocessed_text)
             text_mood = INTENT_TO_MOOD[intent]
             reason_map = {
-                "wholesome": (
+                "sad": (
                     "You seem to be feeling **low or emotionally drained**. "
                     "Instead of recommending more sad movies, MoodCat suggests **wholesome, comforting films** to help lift your mood. 💛"
                 ),
