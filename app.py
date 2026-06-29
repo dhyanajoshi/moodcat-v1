@@ -190,7 +190,7 @@ INTENT_MAP = {
     "burnout": ["done with everything", "tired of life", "exhausted", "over it", "i can't anymore"],
     "comfort": ["sad", "need comfort", "feeling low", "lonely", "bad day"],
     "chaotic_fun": ["fucked", "mess", "chaos", "wild", "no thoughts"],
-    "romance_hot": ["sexy", "hot", "horny", "romantic", "love vibes"],
+    "romance_hot": ["sexy", "hot", "romantic", "love vibes"],
     "feel_good": ["happy", "good vibes", "chill", "relaxed"],
 }
 
@@ -373,12 +373,12 @@ def preprocess_text(text):
 # ---------------------------
 
 def display_grid(recs, grid_id="main"):
-    cols = st.columns(3, gap="large")
+    cols = st.columns(4, gap="medium")
     for i, row in recs.reset_index(drop=True).iterrows():
-        c = cols[i % 3]
+        c = cols[i % 4]
         with c:
             poster_url = poster_for_title(row["title"])
-            st.image(poster_url, use_container_width=True)
+            st.image(poster_url, width=200)
             st.markdown(f"**{row['title']}**")
             st.caption(f"Score: {row['final_score']:.3f}")
             movie_id = row.get("movieId")
@@ -570,7 +570,44 @@ with st.sidebar:
             preprocessed_text = preprocess_text(user_text)
             intent = detect_intent(preprocessed_text)
             text_mood = INTENT_TO_MOOD[intent]
-            st.success(f"Detected mood: **{text_mood.capitalize()}**")
+            reason_map = {
+                "wholesome": (
+                    "You seem to be feeling **low or emotionally drained**. "
+                    "Instead of recommending more sad movies, MoodCat suggests **wholesome, comforting films** to help lift your mood. 💛"
+                ),
+                "happy": (
+                    "You seem to be in a **happy mood**, so here's a collection of feel-good movies to keep the good vibes going! 😄"
+                ),
+                "excited": (
+                    "You're looking for something exciting, so here are some **high-energy action and adventure movies**. ⚡"
+                ),
+                "relaxed": (
+                    "Looks like you're in the mood to unwind. Here are some **light and relaxing movies**. 😌"
+                ),
+                "romantic": (
+                    "Feeling romantic? Here are some **heartwarming romance films**. 💕"
+                ),
+                "sentimental": (
+                    "You're feeling nostalgic, so we've picked **emotionally rich and sentimental movies**. 🥹"
+                ),
+                "dark": (
+                    "You're in the mood for something intense, so here are some **dark thrillers and mysteries**. 🌑"
+                ),
+                "thoughtful": (
+                    "Looking for something thought-provoking? These films should keep you thinking long after the credits roll. 🧠"
+                ),
+                "truecrime": (
+                    "Seems like you're craving mystery and investigation. Here are some **crime-focused recommendations**. 🕵️"
+                ),
+                "documentary": (
+                    "You're in the mood to learn something new. Here are some engaging documentaries. 📚"
+                ),
+                "neutral": (
+                    "Not sure what you're in the mood for? Here are some **general recommendations** to explore. 🎲"
+                ),}       
+
+            st.success(f"Here's the vibe I'm picking up...**{text_mood.capitalize()}**")
+            st.info(reason_map.get(text_mood, "Enjoy your personalized recommendations!"))
             recs_text = recommend_hybrid(
                 user_id=None,
                 mood=text_mood,
