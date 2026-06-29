@@ -1,150 +1,307 @@
+# 🌟 MoodCat — Emotion & Intent-Aware Hybrid Movie Recommendation System
 
-# 😺 MoodCat — Mood-Based Hybrid Movie Recommender
+MoodCat is a **hybrid movie recommendation system** that combines **collaborative filtering, content-based filtering, popularity ranking, and emotion-aware recommendation logic** to provide personalized movie suggestions based on both **user preferences** and **current emotional context**.
 
-![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python)
-![Streamlit](https://img.shields.io/badge/Streamlit-App-red?logo=streamlit)
-![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Hybrid%20Recommender-brightgreen)
-![TMDB API](https://img.shields.io/badge/TMDB-API-lightgrey)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+Instead of asking:
+“What have you watched?”
+MoodCat asks:
+“How are you feeling right now?”
 
-MoodCat is an AI-powered **hybrid movie recommendation system** that suggests movies based on a user’s **current mood**, watch history, content similarity, and popularity trends — all inside an interactive Streamlit dashboard.
+![homescreen](assets/home_screen.png)
+![Recommendations](assets/intent-sentiment-analyzer.png)
 
-Unlike traditional recommenders that rely only on past activity, MoodCat adds an **emotional intelligence layer** using sentiment analysis and mood-to-genre mapping to make recommendations more human-centric.
-
----
-
-## 🚀 Features
-
-- Mood-based movie recommendations *(Happy, Sad, Romantic, Wholesome, Dark, True Crime, Documentary, and more)*
-- Text-based mood detection using **TextBlob**
-- Hybrid recommender system *(Collaborative + Content + Mood + Popularity)*
-- Shuffle / regenerate recommendations dynamically
-- **Surprise Me** feature
-- Save movies to watch later
-- Friend recommendation mode *(based on another user ID)*
-- Animated glassmorphism UI with gradient background
-- Live movie posters fetched using **TMDB API**
-- Fast performance with **Streamlit caching**
 
 ---
 
-## 🧠 Hybrid Recommendation Architecture
+## 🚀 Live Demo
 
-MoodCat combines multiple recommendation strategies into a single hybrid score:
-
-| Component | Technique | Weight |
-|---|---|---|
-| Collaborative Filtering | Truncated SVD on MovieLens ratings | **50%** |
-| Content Similarity | TF-IDF on titles & genres | **20%** |
-| Mood Relevance | Genre mapping based on mood | **20%** |
-| Popularity | Rating frequency normalization | **10%** |
+👉 https://moodcat-v1.streamlit.app
 
 ---
 
-## 🛠️ ML / AI Concepts Used
+## 🎯 Problem Statement
 
-- TF-IDF Vectorization
-- Cosine Similarity
-- Truncated SVD (Collaborative Filtering)
-- Sentiment Analysis (TextBlob)
-- Feature Scaling (MinMaxScaler)
-- Hybrid Recommendation System Design
+Most recommendation systems answer one question:
 
----
+> **"What has this user liked before?"**
 
-## 🗂️ Dataset Used
+However, movie choices are often depend on a person's **current mood**, not just their historical preferences.
 
-This project uses the **MovieLens 100K Dataset**.
+Someone who usually watches thrillers may instead want a comforting comedy after a stressful day.
 
-- `u.item` — Movie metadata & genres  
-- `u.data` — User ratings
-
-Movie posters are dynamically fetched using the **TMDB API**.
+MoodCat explores how classical recommendation techniques can be enhanced with an emotion-aware recommendation layer without relying on large language models or deep learning.
 
 ---
 
-## 🔐 Environment Variable (TMDB API)
+## ✨ Features
 
-Create a `.env` file in the root directory:
-
-```
-TMDB_API_KEY="your_key_here"
-```
-
-Or use Streamlit secrets:
-
-`.streamlit/secrets.toml`
-
-```
-TMDB_API_KEY = "cb080ccb4e224a39cce6e2d61296edf7"
-```
+* 🎭 Mood-aware movie recommendations
+* 💬 Free-text emotion detection
+* 🤖 Hybrid recommendation engine
+* 👥 Simulated multi-user recommendations
+* 🎬 Seed movie recommendations
+* 🔍 Fuzzy movie title matching
+* 🎲 Surprise Me mode
+* 💾 Session-based watchlist
+* 🖼 Dynamic movie posters using TMDB (with OMDb fallback)
+* 🎨 Interactive Streamlit interface
 
 ---
 
-## ▶️ How to Run Locally
+## 🏗 System Architecture
 
-### 1️⃣ Install dependencies
+```User Input
+(Mood / Text / Seed Movie)
 
-```
-pip install -r requirements.txt
+        │
+        ├─────────────┐
+        │             │
+        ▼             ▼
+
+Mood Selection   Intent Detection
+
+        │             │
+        ▼             ▼
+
+ Mood Mapping    Mood Mapping
+
+        └──────┬──────┘
+               ▼
+
+     Hybrid Recommendation Engine
+
+               │
+               ▼
+
+      Ranked Recommendations---
+
+## 🧠 Recommendation Pipeline
+
+### **1. Collaborative Filtering** 
+
+
+MovieLens ratings are transformed into a **user-item interaction matrix**.
+
+A **Truncated Singular Value Decomposition (SVD)** model learns latent representations of users and movies, enabling personalized recommendations based on historical user behavior.
+
+---
+
+### **2. Content-Based Filtering**
+
+Each movie is represented using its:
+
+* Movie title
+* Genre information
+
+These features are converted into **TF-IDF vectors**, and **cosine similarity** is used to identify movies similar to a selected seed movie.
+
+---
+
+### **3. Mood & Intent Layer**
+
+Users can either:
+
+* Select a predefined mood
+* Describe how they feel using natural language
+
+Example:
+
+```text
+"I'm exhausted after exams."
+
+↓
+
+Intent Detection
+
+↓
+
+Burnout
+
+↓
+
+Wholesome Mood
+
+↓
+
+Comedy + Animation + Family recommendations
 ```
 
-### 2️⃣ Run the Streamlit app
+The intent detection module combines:
 
+* Rule-based keyword matching
+* Emoji preprocessing
+* Handcrafted intent-to-mood mapping
+
+to align recommendations with the user's emotional state.
+
+---
+
+### **4. Popularity Ranking**
+
+Movie popularity is estimated using the number of user ratings.
+
+Popularity scores are normalized using **MinMax Scaling** before being combined with the remaining recommendation signals.
+
+---
+
+### **5. Hybrid Scoring**
+
+The collaborative filtering and popularity scores are normalized before being combined with the content similarity score using weighted aggregation
+
+```text
+Final Score =
+0.50 × Collaborative Score
++ 0.30 × Content Similarity
++ 0.20 × Popularity Score
 ```
-streamlit run app.py
-```
+
+To improve recommendation diversity, the application samples recommendations from the **highest-ranked candidate pool** instead of always returning the exact same movies.
+
+---
+
+## 📊 **Dataset**
+
+*MovieLens 100K*
+
+*  1,682 movies
+*  943 users
+*  100,000 ratings
+*  19 movie genres
+
+Files used:
+
+* `u.data`
+* `u.item`
+
+---
+
+## 🛠 Tech Stack
+
+### Machine Learning
+
+* Scikit-learn
+* Truncated SVD
+* TF-IDF Vectorization
+* Cosine Similarity
+
+### Data Processing
+
+* Pandas
+* NumPy
+
+### NLP
+
+* Rule-based Intent Detection
+* Emoji Preprocessing
+* RapidFuzz Fuzzy Matching
+
+### Frontend
+
+* Streamlit
+
+### APIs
+
+* TMDB API
+* OMDb API
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 MoodCat/
 │
 ├── app.py
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
-├── .env.example
 │
 ├── assets/
 │   └── MoodCat.png
 │
-└── ml_dataset/
-    ├── u.item
-    └── u.data
+├── ml_dataset/
+│   ├── u.item
+│   └── u.data
+│
+└── .streamlit/
+    └── secrets.toml
 ```
 
 ---
 
-## 💡 What Makes MoodCat Different?
+## 🔐 Environment Variables
 
-Traditional systems say:
+Store your API keys using Streamlit Secrets.
 
-> “You watched X, so watch Y.”
+```toml
+# .streamlit/secrets.toml
 
-MoodCat says:
-
-> **“You feel X, so watch Y.”**
-
-This adds an emotional and contextual layer to content discovery.
-
----
-
-## 🌟 Future Improvements
-
-- Web series recommendations
-- Music recommendations
-- Online deployment (Streamlit Cloud)
-- Explainable recommendation scores
-- User login & history tracking
-- Analytics dashboard for trends
+TMDB_API_KEY = "your_tmdb_api_key"
+OMDB_API_KEY = "your_omdb_api_key"
+```
 
 ---
 
-## 🧑‍💻 Author
+## ▶️ Run Locally
 
-**Dhyana Joshi**  
-B.Tech — Computer Science and Design  
-G. H. Patel College of Engineering and Technology
+```bash
+git clone https://github.com/your-username/moodcat-v1.git
+cd moodcat-v1
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+---
+
+## 🎬 **Additional Features**
+
+### 🎥 Seed Movie Recommendations
+
+Uses **RapidFuzz** to identify approximate movie titles and retrieves similar movies using **TF-IDF cosine similarity**.
+
+### 👥 User Simulation
+
+Switch between MovieLens user IDs to observe how collaborative filtering produces personalized recommendations for different users.
+
+### 🎲 Surprise Me
+
+Generates a random recommendation that still aligns with the user's selected mood.
+
+### 💾 Watchlist
+
+Save recommended movies during a session using **Streamlit Session State**.
+
+### 🖼 Dynamic Poster Retrieval
+
+Movie posters are fetched from **TMDB**, with **OMDb** serving as a fallback when necessary. Poster URLs are cached to improve performance and reduce API calls.
+
+---
+
+## ⚠️ Current Limitations
+
+* Rule-based intent detection cannot fully understand complex language.
+* Mood mapping is manually designed.
+* User profiles are session-based and not persistent.
+* Content similarity is based on titles and genres rather than plot summaries.
+* Cold-start remains a challenge for unseen users.
+
+---
+
+## 🔮 Future Improvements
+
+* Transformer-based sentiment classification
+* Explainable recommendation system
+* Adaptive hybrid weight learning
+* Persistent user profiles and watch history
+* Multi-emotion recommendations
+* Expansion to music, anime, and books
+
+---
+
+## 👩‍💻 Author
+
+**Dhyana Joshi**
+
+B.Tech — Computer Science & Design
+
+G H Patel College of Engineering & Technology
