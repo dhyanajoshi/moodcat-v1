@@ -187,8 +187,8 @@ MOOD_KEYWORDS = {
 }
 
 INTENT_MAP = {
-    "burnout": ["done with everything", "tired of life", "exhausted", "over it", "i can't anymore"],
-    "comfort": ["sad", "need comfort", "feeling low", "lonely", "bad day", "sad", "sadd", "upset", "down", "blue","low" "depressed", "heartbroken", "meh","the world is ending"],
+    "burnout": ["done with everything", "tired of life", "exhausted", "over it", "i can't anymore", "burnout", "drained", "overworked", "mentally exhausted", "emotionally exhausted"],
+    "comfort": ["sad", "need comfort", "feeling low", "lonely", "bad day", "sad", "sadd", "upset", "down", "blue", "low", "depressed", "heartbroken", "meh", "the world is ending"],
     "chaotic_fun": ["fucked", "mess", "chaos", "wild", "no thoughts"],
     "romance_hot": ["sexy", "hot", "romantic", "love vibes"],
     "feel_good": ["happy", "good vibes", "chill", "relaxed"],
@@ -199,7 +199,8 @@ INTENT_TO_MOOD = {
     "comfort": "wholesome",
     "chaotic_fun": "dark",
     "romance_hot": "romantic",
-    "feel_good": "happy"
+    "feel_good": "happy",
+    "neutral": "neutral",
 }
 
 
@@ -337,11 +338,18 @@ def recommend_hybrid(user_id, mood, seed_title, n, movies_df, ratings_df, tfidf_
 # Intent Detection
 # ---------------------------
 def detect_intent(text):
-    text = text.lower()
+    text = preprocess_text(text)
     for intent, keywords in INTENT_MAP.items():
-        if any(k in text for k in keywords):
+        if any(keyword in text for keyword in keywords):
             return intent
-    return "feel_good"
+    sentiment = analyzer.polarity_scores(text)
+    compound = sentiment["compound"]
+    if compound <= -0.45:
+        return "comfort"
+    elif compound >= 0.45:
+        return "feel_good"
+    else:
+        return "neutral"
 
 # ---------------------------
 # Fallback local mood detection
