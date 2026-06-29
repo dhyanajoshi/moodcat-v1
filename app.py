@@ -527,28 +527,36 @@ with st.sidebar:
 # ---------------------------
 # Sidebar: Saved Watchlist
 # ---------------------------
+
 st.sidebar.markdown("---")
 st.sidebar.subheader("💾 Your Watchlist")
+
 if st.session_state.saved:
+
     for mid in st.session_state.saved.copy():
-        movie = movies[movies["movie_id"] == mid]
+
+        # Find the movie by ID
+        movie = movies[movies["movieId"] == mid]
+
         if movie.empty:
             continue
+
         title = movie.iloc[0]["title"]
-        col1, col2 = st.sidebar.columns([4, 1])
-        with col1:
-            poster = poster_for_title(title)
-            st.image(poster, width=80)
-            st.caption(title)
-        with col2:
-            if st.button("❌", key=f"remove_{mid}"):
-                st.session_state.saved.remove(mid)
-                st.rerun()
+        poster = poster_for_title(title)
+
+        st.sidebar.image(poster, width=80)
+        st.sidebar.caption(title)
+
+        if st.sidebar.button("❌ Remove", key=f"remove_{mid}"):
+            st.session_state.saved.remove(mid)
+            st.rerun()
+
     if st.sidebar.button("🗑 Clear Watchlist"):
         st.session_state.saved.clear()
         st.rerun()
+
 else:
-    st.sidebar.caption("No saved movies yet.")    
+    st.sidebar.caption("No saved movies yet.")
 
 # ---------------------------
 # Text-based mood detection
@@ -619,9 +627,6 @@ if st.button("Surprise Me! 🎲"):
     surprise = pool.sample(1).iloc[0]
     st.success(f"Your surprise pick: **{surprise['title']}**")
     st.image(poster_for_title(surprise["title"]), width=200)
-    
-
-
 
 fid = st.number_input("Friend's User ID", min_value=1, max_value=max(ratings_df["userId"]), value=1)
 if st.button("Show Friend's Picks"):
