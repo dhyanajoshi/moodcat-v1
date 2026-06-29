@@ -412,7 +412,7 @@ with center:
 
 st.markdown(
     "<p style='text-align:center; color:#4b0082; font-size:18px; font-weight:bold;'>"
-    "Your mood, your movie, your vibe ✨"
+    "the algorithm that actually gets you."
     "</p>",
     unsafe_allow_html=True
 )
